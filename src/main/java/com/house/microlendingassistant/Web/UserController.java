@@ -29,7 +29,7 @@ public class UserController {
 
     @PostMapping("")
     public ResponseEntity<?> createNewUser(@Valid @RequestBody User user, BindingResult result){
-        ResponseEntity<Map<String, String>> errorMap = errorValidationService(result);
+        ResponseEntity<Map<String, String>> errorMap = (ResponseEntity<Map<String, String>>) errorValidationService.ErrorValidationService(result);
         if(errorMap!=null){
             return errorMap;
         }
