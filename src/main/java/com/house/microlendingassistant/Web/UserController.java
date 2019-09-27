@@ -1,5 +1,6 @@
 package com.house.microlendingassistant.Web;
 
+import com.house.microlendingassistant.Services.ErrorValidationService;
 import com.house.microlendingassistant.Services.UserService;
 import com.house.microlendingassistant.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,17 +24,14 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private ErrorValidationService errorValidationService;
+
     @PostMapping("")
     public ResponseEntity<?> createNewUser(@Valid @RequestBody User user, BindingResult result){
-        if(result.hasErrors()){
-            Map<String, String> errorMap= new HashMap<>();
-            Iterator errorIterator = result.getFieldErrors().iterator();
-            while(errorIterator.hasNext()){
-                FieldError error = (FieldError) errorIterator.next();
-                errorMap.put(error.getField(), error.getDefaultMessage());
-            }
-
-            return new ResponseEntity<Map<String, String>>(errorMap, HttpStatus.BAD_REQUEST);
+        ResponseEntity<Map<String, String>> errorMap = errorValidationService(result);
+        if(errorMap!=null){
+            return errorMap;
         }
         userService.saveOrUpdateUser(user);
         return new ResponseEntity<User>(user, HttpStatus.CREATED);
