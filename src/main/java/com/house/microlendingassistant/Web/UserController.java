@@ -18,6 +18,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/user")
+@CrossOrigin
 public class UserController {
     @Autowired
     private UserService userService;
@@ -32,13 +33,13 @@ public class UserController {
         if(errorMap!=null){
             return errorMap;
         }
-        userService.saveOrUpdateUser(user);
-        return new ResponseEntity<User>(user, HttpStatus.CREATED);
+        User userUpdate = userService.saveOrUpdateUser(user);
+        return new ResponseEntity<User>(userUpdate, HttpStatus.CREATED);
     }
 
-    @GetMapping("/{username}") //{username} is a variable
-    public ResponseEntity<?> getUserByUsername(@PathVariable String username){
-        User user = userService.findUserByUsername(username);
+    @GetMapping("/{id}") //{username} is a variable
+    public ResponseEntity<?> getUserById(@PathVariable String id){
+        User user = userService.findUserById(Long.parseLong(id));
         return new ResponseEntity<User>(user, HttpStatus.OK);
     }
 
@@ -47,9 +48,9 @@ public class UserController {
         return userService.finaAllUsers();
     }
 
-    @DeleteMapping("/{username}")
-    public ResponseEntity<?> deleteUser(@PathVariable String username) {
-        userService.deleteUserbyUsername(username);
-        return new ResponseEntity<String>("User with username: '"+username+"' is deleted", HttpStatus.OK);
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteUser(@PathVariable String id) {
+        userService.deleteUserbyId(Long.parseLong(id));
+        return new ResponseEntity<String>("User with id: '"+id+"' is deleted", HttpStatus.OK);
     }
 }

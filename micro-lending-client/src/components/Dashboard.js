@@ -1,8 +1,17 @@
 import React, { Component } from "react";
 import ProjectItem from "./Project/projectItem";
 import CreateProjectButton from "./Project/createProjectButton";
-class componentName extends Component {
+import { connect } from "react-redux";
+import { getUsers } from "../actions/projectActions";
+import PropTypes from "prop-types";
+class Dashboard extends Component {
+  componentDidMount() {
+    this.props.getUsers();
+  }
+
   render() {
+    const userList= this.props.users;
+    console.log(userList);
     return (
       <div className="projects">
         <div className="container">
@@ -13,7 +22,10 @@ class componentName extends Component {
               <CreateProjectButton />
               <br />
               <hr />
-              <ProjectItem />
+              {userList.users.map(usr =>
+                  (
+                        <ProjectItem key={usr.id} user={usr} />
+              ))}
             </div>
           </div>
         </div>
@@ -21,4 +33,16 @@ class componentName extends Component {
     );
   }
 }
-export default componentName;
+
+Dashboard.propTypes = {
+  users: PropTypes.object.isRequired,
+  getUsers: PropTypes.func.isRequired
+};
+
+const mapStateToProps = state => ({
+  users: state.users
+});
+export default connect(
+  mapStateToProps,
+  { getUsers }
+)(Dashboard);

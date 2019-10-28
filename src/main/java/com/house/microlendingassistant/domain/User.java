@@ -9,6 +9,8 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 public class User {
@@ -17,8 +19,14 @@ public class User {
     private Long id;
 
     @NotBlank(message="Username is required")
-    @Column(updatable=false, unique=true)
+    @Column(unique=true)
     private String username;
+
+    @NotBlank(message="First Name is required")
+    private String firstName;
+
+    @NotBlank(message="Last Name is required")
+    private String lastName;
 
     @Digits(integer=15, fraction = 2)
     private double salary;
@@ -29,11 +37,39 @@ public class User {
     @JsonFormat(pattern="dd-mm-yyyy")
     private Date createdAt;
 
+    //OnetoMany relationship with userCategories.
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy="user")
+    private Set<UserCategories> userCategoriesSet = new HashSet<UserCategories>();
+
+    public Set<UserCategories> getUserCategoriesSet() {
+        return userCategoriesSet;
+    }
+
+    public void setUserCategoriesSet(Set<UserCategories> userCategoriesSet) {
+        this.userCategoriesSet = userCategoriesSet;
+    }
+
+
     public User(){
     }
 
     public Long getId(){
         return id;
+    }
+    public String getFirstName(){
+        return firstName;
+    }
+
+    public String getLastName(){
+        return lastName;
+    }
+
+    public void setFirstName(String firstName){
+        this.firstName = firstName;
+    }
+
+    public void setLastName(String lastName){
+        this.lastName = lastName;
     }
 
     public String getUsername(){
