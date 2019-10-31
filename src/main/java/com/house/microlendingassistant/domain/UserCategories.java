@@ -13,6 +13,7 @@ public class UserCategories {
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Long id;
     @Column
+    @NotBlank(message = "Please specify name of category")
     private String categoryName;
     @Column
     private String userSequence;
@@ -21,10 +22,10 @@ public class UserCategories {
     @Column
     private Integer Totalexpenditure;
 
-    @ManyToOne(fetch=FetchType.EAGER, cascade = CascadeType.REFRESH) //refresh the state of the instance from the db and also refresh usercategories.
+    @ManyToOne(fetch=FetchType.EAGER) //refresh the state of the instance from the db and also refresh usercategories.
     @JoinColumn(name="user_id", updatable = false, nullable = false)
     @JsonIgnore
-    User user = new User();
+    User user;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy="userCategories")
     List<Expenditure> expenditures = new LinkedList<Expenditure>();

@@ -38,7 +38,7 @@ public class User {
     private Date createdAt;
 
     //OnetoMany relationship with userCategories.
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy="user")
+    @OneToMany(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER, mappedBy="user", orphanRemoval = true)
     private Set<UserCategories> userCategoriesSet = new HashSet<UserCategories>();
 
     public Set<UserCategories> getUserCategoriesSet() {

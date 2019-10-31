@@ -8,7 +8,7 @@ public class UserIdExceptionResponse {
     }
 
     public String getUserIdentifier(){
-        return this.userIdentifier;
+        return userIdentifier;
     }
 
     public void setUserIdentifier(String userIdentifier) {

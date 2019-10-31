@@ -22,7 +22,7 @@ public class Expenditure {
     @ManyToOne(fetch=FetchType.EAGER, cascade = CascadeType.REFRESH)
     @JoinColumn(name="userCategories_id", updatable=false, nullable=false)
     @JsonIgnore
-    UserCategories userCategories = new UserCategories();
+    UserCategories userCategories;
 
     public Expenditure() {
 
