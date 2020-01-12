@@ -19,15 +19,15 @@ public class UserCategoriesService {
     @Autowired
     private UserRepository userRepository;
 
-    public UserCategories addUserCategories(String username, UserCategories userCategories){
+    public UserCategories addUserCategories(Long id, UserCategories userCategories){
 
         try{
-            if(userRepository.findByUsername(username)!= null){
-                User user = userRepository.findByUsername(username);
+            User user = userRepository.findById(id).orElse(null);
+            if(user!=null){
                 userCategories.setUser(user);
                 //Initial priority lowest
-                if(userCategories.getPriority()==null){ // IN the future, the form needs to handle priority to default to 0.
-                    userCategories.setPriority(1);
+                if(userCategories.getPriority()==0 || userCategories.getPriority()==null){ // IN the future, the form needs to handle priority to default to 0.
+                    userCategories.setPriority(3);
                 }
                 if(userCategories.getCategoryName()==null || userCategories.getCategoryName()==""){
                     userCategories.setCategoryName("Please Set Category");

@@ -22,13 +22,13 @@ public class UserCategoriesController {
     @Autowired
     private ErrorValidationService errorValidationService;
 
-    @PostMapping("/{username}")
+    @PostMapping("/{id}")
     public ResponseEntity<?> saveCategoryToUser(@Valid @RequestBody UserCategories userCategories,
-                                                BindingResult result, @PathVariable String username){
+                                                BindingResult result, @PathVariable Long id){
         ResponseEntity<?> errorMap = errorValidationService.ErrorValidationService(result);
         if(errorMap!=null)
             return errorMap;
-        UserCategories userCategories1 = userCategoriesService.addUserCategories(username, userCategories);
+        UserCategories userCategories1 = userCategoriesService.addUserCategories(id, userCategories);
         return new ResponseEntity<UserCategories>(userCategories1, HttpStatus.CREATED);
     }
 

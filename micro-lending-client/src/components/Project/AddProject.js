@@ -27,6 +27,9 @@ class AddProject extends Component {
   }
 
   onUserName(e) {
+    //dynamically takes the input field name and value (when the input field changes)
+    // and sets and matched the name and the value fields (in input html form ) to
+    // that of the state.
     this.setState({ [e.target.name]: e.target.value });
   }
 

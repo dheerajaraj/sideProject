@@ -1,9 +1,63 @@
 import React, {Component} from 'react';
 import {Link} from "react-router-dom";
+import {connect} from "react-redux";
+import classnames from "classnames";
+import {addUserCategories} from "../../../actions/backlogActions";
+import PropTypes from "prop-types";
 
 class AddUserCategories extends Component {
+
+    constructor(props){
+        super(props);
+        const {id} = this.props.match.params; //gets the param from the url
+
+        this.state = {
+            categoryName: null,
+            priority:0,
+            Totalexpenditure:0,
+            userIdentifier: id,
+            errors: {}
+        };
+        this.onChange = this.onChange.bind(this);
+        this.onSubmit= this.onSubmit.bind(this);
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if(nextProps.errors){
+            this.setState({errors: nextProps.errors});
+        }
+    }
+
+
+    onChange(e){
+        //dynamically takes the input field name and value (when the input field changes)
+        // and sets and matched the name and the value fields (in input html form ) to
+        // that of the state.
+        this.setState({[e.target.name]:e.target.value});
+    }
+
+    onSubmit(e){
+        e.preventDefault();
+
+        const sendUserCategoryDetails = {
+            categoryName:this.state.categoryName,
+            priority: this.state.priority,
+            Totalexpenditure: this.state.Totalexpenditure,
+            userIdentifier: this.state.userIdentifier
+        };
+
+        this.props.addUserCategories(
+            this.state.userIdentifier,
+            sendUserCategoryDetails,
+            this.props.history
+        );
+        console.log(sendUserCategoryDetails);
+    }
+
     render() {
         const {id}= this.props.match.params;
+        const {errors} = this.state;
+
         return (
             <div className="add-PBI">
                 <div className="container">
@@ -14,21 +68,24 @@ class AddUserCategories extends Component {
                             </Link>
                             <h4 className="display-4 text-center">Add /Update Project Task</h4>
                             <p className="lead text-center">Project Name + Project Code</p>
-                            <form>
+                            <form onSubmit={this.onSubmit}>
                                 <div className="form-group">
-                                    <input type="text" className="form-control form-control-lg" name="summary"
-                                           placeholder="Project Task summary"/>
+                                    <input type="text" className={classnames("form-control form-control-lg", {
+                                        "is-invalid": errors.categoryName
+                                    })} name="categoryName"
+                                           placeholder="Category Name"
+                                           value ={this.state.categoryName}
+                                           onChange={this.onChange}
+                                    />
+                                    {errors.categoryName && (
+                                        <div className="invalid-feedback">{errors.categoryName}</div>
+                                    )}
                                 </div>
+
                                 <div className="form-group">
-                                    <textarea className="form-control form-control-lg" placeholder="Acceptance Criteria"
-                                              name="acceptanceCriteria"></textarea>
-                                </div>
-                                <h6>Due Date</h6>
-                                <div className="form-group">
-                                    <input type="date" className="form-control form-control-lg" name="dueDate"/>
-                                </div>
-                                <div className="form-group">
-                                    <select className="form-control form-control-lg" name="priority">
+                                    <select className="form-control form-control-lg" name="priority"
+                                    value = {this.state.priority}
+                                            onChange={this.onChange}>
                                         <option value={0}>Select Priority</option>
                                         <option value={1}>High</option>
                                         <option value={2}>Medium</option>
@@ -37,15 +94,16 @@ class AddUserCategories extends Component {
                                 </div>
 
                                 <div className="form-group">
-                                    <select className="form-control form-control-lg" name="status">
-                                        <option value="">Select Status</option>
-                                        <option value="TO_DO">TO DO</option>
-                                        <option value="IN_PROGRESS">IN PROGRESS</option>
-                                        <option value="DONE">DONE</option>
-                                    </select>
+                                    <input type="number" className="form-control form-control-lg" name="Totalexpenditure"
+                                        placeholder="Total Expenditure"
+                                    value={this.state.Totalexpenditure}
+                                           onChange={this.onChange}
+                                    />
                                 </div>
 
-                                <input type="submit" className="btn btn-primary btn-block mt-4"/>
+                                <input type="submit"
+                                       className="btn btn-primary btn-block mt-4"
+                                />
                             </form>
                         </div>
                     </div>
@@ -55,4 +113,15 @@ class AddUserCategories extends Component {
     }
 }
 
-export default AddUserCategories;
+AddUserCategories.propTypes = {
+    addUserCategories: PropTypes.func.isRequired,
+    errors: PropTypes.object.isRequired
+};
+
+const mapStateToProps = state =>({
+    errors: state.errors
+});
+
+export default connect(mapStateToProps, { addUserCategories })(AddUserCategories);
+
+//export default connect(null, {addUserCategories})(AddUserCategories);
